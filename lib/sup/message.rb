@@ -13,7 +13,7 @@ module Redwood
 ## sequences in the text of an email. (how sweet would that be?)
 
 class Message
-  SNIPPET_LEN = 80
+  SNIPPET_LEN = 240
   RE_PATTERN = /^((re|re[\[\(]\d[\]\)]):\s*)+/i
 
   ## some utility methods

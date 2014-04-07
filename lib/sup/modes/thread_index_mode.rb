@@ -961,11 +961,9 @@ protected
 
       cur_width += abbrev.display_length
 
-      if last && from_width > cur_width
-        abbrev += " " * (from_width - cur_width)
-      end
+      abbrev += " "
 
-      from << [(newness ? :index_new_color : (starred ? :index_starred_color : :index_old_color)), abbrev]
+      from << [(newness ? :from_new_color : (starred ? :from_starred_color : :from_old_color)), abbrev]
     end
 
     is_me = AccountManager.method(:is_account?)
@@ -996,12 +994,12 @@ protected
       [:date_color, date_widget_text],
       [:starred_color, (starred ? "*" : " ")],
     ] +
-      from +
       [
       [:size_widget_color, size_widget_text],
       [:to_me_color, t.labels.member?(:attachment) ? "@" : " "],
       [:to_me_color, directly_participated ? ">" : (participated ? '+' : " ")],
     ] +
+      from +
       (t.labels - @hidden_labels).sort_by {|x| x.to_s}.map {
             |label| [Colormap.sym_is_defined("label_#{label}_color".to_sym) || :label_color, "#{label} "]
       } +
