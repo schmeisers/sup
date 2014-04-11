@@ -50,12 +50,14 @@ class MaildirRoot < Source
   ## remind me never to use inheritance again.
   yaml_properties :uri, :usual, :archived, :id, :labels, :sync_back,
                   :confirm_enable_experimental, :maildir_creation_allowed,
+                  :archive_sent,
                   :inbox_folder,
                   :sent_folder, :drafts_folder, :spam_folder,
                   :trash_folder, :archive_folder
   def initialize uri, usual=true, archived=false, id=nil, labels=[],
                  sync_back=false, confirm_enable_experimental = false,
                  maildir_creation_allowed = false,
+                 archive_sent=true,
                  inbox_folder = 'inbox', sent_folder = 'sent',
                  drafts_folder = 'drafts', spam_folder = 'spam',
                  trash_folder = 'trash', archive_folder = 'archive'
@@ -88,6 +90,8 @@ class MaildirRoot < Source
     @spam_folder    = spam_folder
     @trash_folder   = trash_folder
     @archive_folder = archive_folder # messages with no label
+
+    @archive_sent   = archive_sent
 
     @all_special_folders = [@inbox_folder, @sent_folder, @drafts_folder,
                             @spam_folder, @trash_folder, @archive_folder]
@@ -705,6 +709,11 @@ class MaildirRoot < Source
 
     if msg.labels.member?(:spam) or msg.labels.member?(:deleted)
       debug "message in spam or trash, not checking whether it is in archive"
+      return msg
+    end
+
+    if !@archive_sent and msg.labels.member?(:sent)
+      debug "message is sent, not checking whether it is in the archive"
       return msg
     end
 
